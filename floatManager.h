@@ -5,10 +5,10 @@
 #define FLOAT_MANAGER_H
 
 #include "config.h"
-#include "missionList.h"
 #include "sensorDriver.h"
 #include "stepperDriver.h"
 #include "mqttLink.h"
+#include "taskExecuter.h"
 
 class floatManager {
   public:
@@ -18,18 +18,18 @@ class floatManager {
       HOVER1,
       ASCEND,
       HOVER2,
-      RECOVERY
+      RECOVERY,
+      UPLOADING
     };
 
-    floatManager(sensorDriver &s, stepperDriver &stp, mqttLink &mq): sensor(s), stepper(stp), mqtt(mq) {};
+    floatManager(mqttLink &mq, taskExecuter &exe): mqtt(mq), executer(exe) {};
     void init();
     void handleCurrentState();
-    void handleCmd();
+    void run();
 
   private:
-    sensorDriver sensor;
-    stepperDriver stepper;
     mqttLink mqtt;
+    taskExecuter executer;
 
     state currentState;
     unsigned long lastMillis;

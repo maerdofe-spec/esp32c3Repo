@@ -58,6 +58,7 @@ void mqttLink::mqttCallback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+// 用实例执行回调
 void mqttLink::handleMessage(char* topic, byte* payload, unsigned int length) {
   // String msg;
   // msg.reserve(length);
@@ -82,3 +83,7 @@ void mqttLink::update() {
 
   mqttClient.loop();
 }
+
+bool hasNewCmd(char* topic) {}
+const String &newCmd(char* topic) {}
+bool checkTopic(char* topic) {}

@@ -1,7 +1,7 @@
 #include "config.h"
 #include "floatManager.h"
+#include "taskExecuter.h"
 #include "mqttLink.h"
-#include "missionList.h"
 #include "stepperDriver.h"
 #include "sensorDriver.h"
 
@@ -10,7 +10,8 @@ unsigned long currentMillis;
 mqttLink mqtt;
 sensorDriver sensor;
 stepperDriver stepper;
-floatManager manager(sensor, stepper, mqtt);
+taskExecuter executer(sensor, stepper);
+floatManager manager(mqtt, executer);
 
 void setup() {
   sensor.init();
@@ -23,6 +24,6 @@ void loop() {
   currentMillis = millis();
   if (currentMillis - lastMillis > 20) {
     lastMillis = currentMillis;
-    manager.handleCmd();
+    manager.run();
   }
 }

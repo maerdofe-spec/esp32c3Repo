@@ -4,8 +4,10 @@
 // 硬件引脚定义
 #define PIN_SDA 6
 #define PIN_SCL 7
-
 #define PIN_BATTERY_ADC 4
+
+// 步进电机参数
+#define VELOCITY 200
 
 // 任务参数
 #define TARGET_DEPTH_DEEP 2.5f    // 目标深度1: 2.5米
