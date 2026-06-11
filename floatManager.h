@@ -21,17 +21,18 @@ class floatManager {
       RECOVERY
     };
 
-    floatManager(sensorDriver *s, stepperDriver *mt, mqttLink *mq): sensor(s), motor(mt), mqtt(mq) {}
+    floatManager(sensorDriver &s, stepperDriver &stp, mqttLink &mq): sensor(s), stepper(stp), mqtt(mq) {};
     void init();
     void handleCurrentState();
+    void handleCmd();
 
   private:
-    sensorDriver* sensor;
-    stepperDriver* motor;
-    mqttLink* mqtt;
+    sensorDriver sensor;
+    stepperDriver stepper;
+    mqttLink mqtt;
 
     state currentState;
-    unsigned long currentMillis;
+    unsigned long lastMillis;
 };
 
 #endif

@@ -1,7 +1,8 @@
 #include "floatManager.h"
 
 void floatManager::init() {
-  currentMillis = millis();
+  lastMillis = millis();
+  currentState = IDLE;
 }
 
 void floatManager::handleCurrentState() {
@@ -13,4 +14,17 @@ void floatManager::handleCurrentState() {
     case HOVER2: hover(TARGET_DEPTH_SHALLOW); break;
     case RECOVERY: recovery(); break;
   }
+}
+
+void floatManager::handleCmd() {
+  if (WiFi.status() != WL_CONNECTED) {
+    mqtt.connectWifi();
+  }
+
+  if (!mqtt.mqttConnected()) {
+    mqtt.connectMqtt();
+  }
+
+  mqtt.update();
+
 }

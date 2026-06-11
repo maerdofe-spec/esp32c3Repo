@@ -33,7 +33,7 @@
 #define MQTT_TOPIC_COUNTER "/counter" // MQTT_TEST
 #define MQTT_TOPIC_DEBUG "/debug"     // DEBUG
 #define MQTT_TOPIC_PREFIX   "/float_sjtu"
-#define MQTT_TOPIC_CMD_BASE MQTT_TOPIC_PREFIX "/cmd"
+#define MQTT_TOPIC_CMD MQTT_TOPIC_PREFIX "/cmd"
 #define MQTT_TOPIC_HISTORY MQTT_TOPIC_PREFIX "/history"
 // #define MQTT_TOPIC_STATUS   MQTT_TOPIC_PREFIX "/status"
 

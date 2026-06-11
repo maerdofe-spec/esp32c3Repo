@@ -21,7 +21,7 @@ class mqttLink {
   public:
     // 初始化方法
     mqttLink();
-    void begin();
+    void init();
     void connectWifi();
     void connectMqtt();
     // 发布数据
@@ -31,6 +31,10 @@ class mqttLink {
     // 读取数据
     bool hasNewCmd(char* topic);
     const String &newCmd(char* topic);
+    bool checkTopic(char* topic);
+    // 状态读取
+    bool mqttConnected() {return mqttClient.connected();}
+
   private:
     struct commandSlot {
       const char *topic;
@@ -42,7 +46,7 @@ class mqttLink {
     static void mqttCallback(char* topic, byte* payload, unsigned int length);
     void handleMessage(char* topic, byte* payload, unsigned int length);
     String emptyCmd;
-    commandSlot *cmdSlot[2];
+    commandSlot cmdSlots[2];
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 };

@@ -1,11 +1,12 @@
 #ifndef STEPPER_DRIVER_H
 #define STEPPER_DRIVER_H
+#include <Arduino.h>
 
 class stepperDriver {
   public:
-    stepperDriver(uint16_t vel, uint8_t acc): maxVel(vel), maxAcc(acc) {
+    stepperDriver() {
       Serial.begin(115200);
-    };
+    }
     void posControl(uint8_t dir, uint16_t vel, uint8_t acc, uint32_t clk) {
       if (vel > maxVel) vel = maxVel;
       if (acc > maxAcc) acc = maxAcc;
@@ -29,8 +30,8 @@ class stepperDriver {
     };
 
   private:
-    uint16_t maxVel;
-    uint8_t maxAcc;
+    uint16_t maxVel = 200;
+    uint8_t maxAcc = 50;
 };
 
 #endif

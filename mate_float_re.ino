@@ -6,15 +6,23 @@
 #include "sensorDriver.h"
 
 unsigned long lastMillis;
-mqttLink *mqtt;
+unsigned long currentMillis;
+mqttLink mqtt;
+sensorDriver sensor;
+stepperDriver stepper;
+floatManager manager(sensor, stepper, mqtt);
 
 void setup() {
-  mqtt = new mqttLink();
-  delay(500); // 等待串口稳定
-  mqtt->begin();
+  sensor.init();
+  mqtt.init();
+  manager.init();
   lastMillis = millis();
 }
 
 void loop() {
-  mqtt->mqttLoop();
+  currentMillis = millis();
+  if (currentMillis - lastMillis > 20) {
+    lastMillis = currentMillis;
+    manager.handleCmd();
+  }
 }

@@ -7,10 +7,12 @@
 
 class sensorDriver {
   public:
-    float getDepth() const{return currentDepth;};
+    sensorDriver();
+    void init();
+    float getDepth() const{}
   
   private:
-    MS5837 sensor;
+    // MS5837 sensor;
     float currentDepth;
 };
 
