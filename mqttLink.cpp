@@ -3,8 +3,7 @@ mqttLink *mqttLink::instance = nullptr;
 
 mqttLink::mqttLink()
     : mqttClient(wifiClient),
-      cmdSlots{{MQTT_TOPIC_CMD, "", false},
-               {MQTT_TOPIC_HISTORY, "", false}},
+      cmdSlot(MQTT_TOPIC_CMD, "", false),
       emptyCmd("")
 {
   instance = this;
@@ -37,7 +36,7 @@ void mqttLink::connectMqtt() {
     return;
   }
 
-  if (!mqttClient.connected()) {
+  if (!mqttConnected()) {
     bool ifConnected = mqttClient.connect(MQTT_CLIENT_ID);
     if (ifConnected) {
       mqttClient.publish(MQTT_TOPIC_CMD, "Where is my mind?");
@@ -48,7 +47,11 @@ void mqttLink::connectMqtt() {
 }
 
 // mqtt publish回传原始数据
-void mqttLink::publish(char* topic, byte* payload) {
+bool mqttLink::publish(char* topic, const char* payload) {
+  if (!mqttConnected()) {
+    return false;
+  }
+  return mqttClient.publish(topic, payload);
 }
 
 // mqtt.loop()的回调函数
@@ -77,13 +80,20 @@ void mqttLink::update() {
     connectWifi();
   }
 
-  if (!mqttClient.connected()) {
+  if (!mqttConnected()) {
     connectMqtt();
   }
 
   mqttClient.loop();
 }
 
-bool hasNewCmd(char* topic) {}
-const String &newCmd(char* topic) {}
-bool checkTopic(char* topic) {}
+bool mqttLink::hasNewCmd() {
+  return cmdSlot.hasNewCmd;
+}
+const String &mqttLink::newCmd() {
+  return cmdSlot.newCmd;
+}
+void mqttLink::clearCmd() {
+  cmdSlot.newCmd = emptyCmd;
+  cmdSlot.hasNewCmd = false;
+}

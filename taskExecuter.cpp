@@ -1,11 +1,21 @@
 #include "taskExecuter.h"
 
 void taskExecuter::init() {}
-void taskExecuter::idle() {}
-void taskExecuter::toDepth(float goal) {
+void taskExecuter::idle() {
 }
-void taskExecuter::hover(float goal) {}
+
+//到达某一深度
+void taskExecuter::toDepth(float goal) {
+
+}
+
+void taskExecuter::hover(float goal) {
+
+}
+
 void taskExecuter::recovery() {}
-uint32_t taskExecuter::pidOutput() {
+uint32_t taskExecuter::pidOutput(float goal) {
+  // sensor.getDepth();
+  // float p = 
   return 3600;
 }

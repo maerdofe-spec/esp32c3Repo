@@ -26,6 +26,7 @@ class floatManager {
     void init();
     void handleCurrentState();
     void run();
+    void handleCmd();
 
   private:
     mqttLink mqtt;

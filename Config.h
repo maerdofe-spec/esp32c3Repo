@@ -14,6 +14,7 @@
 #define TARGET_DEPTH_SHALLOW 0.4f // 目标深度2: 0.4米
 #define HOVER_DURATION 30000      // 悬停时间: 30秒 (毫秒)
 #define LOG_INTERVAL 1000         // 数据记录间隔: 1秒
+#define MAX_DEPTH_OFFSET 0.05     // 最大任务深度偏移: 0.05米
 #define FEEDFORWARD_SHALLOW 3600
 #define FEEDFORWARD_DEEP 7200
 #define CTRL_KP_DEFAULT 0.90f

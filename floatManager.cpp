@@ -22,6 +22,15 @@ void floatManager::handleCurrentState() {
   }
 }
 
+void floatManager::handleCmd() {
+  if (!mqtt.mqttConnected() || !mqtt.hasNewCmd()) return;
+  String cmd = mqtt.newCmd();
+  if (cmd == "start") {
+    currentState = DIVE;
+    mqtt.clearCmd();
+  }
+}
+
 void floatManager::run() {
   if (WiFi.status() != WL_CONNECTED) {
     mqtt.connectWifi();
@@ -33,6 +42,8 @@ void floatManager::run() {
 
   // 尝试获取最新状态，给对应topic更新msg
   mqtt.update();
-  // 去处理给定cmd的任务
-  // handleCurrentState();
+  // 去处理可能的cmd的任务
+  handleCmd();
+  // 处理当前的状态
+  handleCurrentState();
 }

@@ -25,20 +25,20 @@ class mqttLink {
     void connectWifi();
     void connectMqtt();
     // 发布数据
-    void publish(char* topic, byte* payload);
+    bool publish(char* topic, const char* payload);
     // 进loop，有新的命令就回调，更新commandSlot
     void update();
     // 读取数据
-    bool hasNewCmd(char* topic);
-    const String &newCmd(char* topic);
-    bool checkTopic(char* topic);
+    bool hasNewCmd();
+    const String &newCmd();
+    void clearCmd();
     // 状态读取
     bool mqttConnected() {return mqttClient.connected();}
 
   private:
     struct commandSlot {
       const char *topic;
-      String latestCmd;
+      String newCmd;
       bool hasNewCmd;
     };
     // 保留了原来的结构体形式，但只保留了一个话题
@@ -46,7 +46,7 @@ class mqttLink {
     static void mqttCallback(char* topic, byte* payload, unsigned int length);
     void handleMessage(char* topic, byte* payload, unsigned int length);
     String emptyCmd;
-    commandSlot cmdSlots[2];
+    commandSlot cmdSlot;
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 };
