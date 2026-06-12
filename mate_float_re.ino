@@ -22,8 +22,9 @@ void setup() {
 
 void loop() {
   currentMillis = millis();
-  if (currentMillis - lastMillis > 20) {
+  if (currentMillis - lastMillis > 30) {
     lastMillis = currentMillis;
-    manager.run();
+    manager.run(); 
   }
+  // delay(500);
 }

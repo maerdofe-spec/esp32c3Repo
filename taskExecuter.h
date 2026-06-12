@@ -29,6 +29,7 @@ class taskExecuter {
   private:
     sensorDriver sensor;
     stepperDriver stepper;
+    timeManager hardResetter;
     timeManager depthTimer;
     timeManager hoverTimer;
     uint32_t integral, feedforward;

@@ -2,7 +2,7 @@
 mqttLink *mqttLink::instance = nullptr;
 
 mqttLink::mqttLink()
-    : mqttClient(wifiClient),
+    : mqttClient(),
       cmdSlot(MQTT_TOPIC_CMD, "", false),
       emptyCmd("")
 {
@@ -16,7 +16,8 @@ void mqttLink::init() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     connectWifi();
   }
-
+  
+  mqttClient.setClient(wifiClient);
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   mqttClient.setCallback(mqttCallback);
   connectMqtt();
@@ -39,7 +40,7 @@ void mqttLink::connectMqtt() {
   if (!mqttConnected()) {
     bool ifConnected = mqttClient.connect(MQTT_CLIENT_ID);
     if (ifConnected) {
-      mqttClient.publish(MQTT_TOPIC_CMD, "Where is my mind?");
+      mqttClient.publish(MQTT_TOPIC_CMD, "A new connection is established.");
       mqttClient.subscribe(MQTT_TOPIC_CMD);
       mqttClient.subscribe(MQTT_TOPIC_HISTORY);
     }
@@ -63,27 +64,19 @@ void mqttLink::mqttCallback(char* topic, byte* payload, unsigned int length) {
 
 // 用实例执行回调
 void mqttLink::handleMessage(char* topic, byte* payload, unsigned int length) {
-  // String msg;
-  // msg.reserve(length);
+  String msg;
+  msg.reserve(length);
 
-  // for (unsigned int i = 0; i < length; ++i) {
-  //   msg += (char)payload[i];
-  // }
+  for (unsigned int i = 0; i < length; ++i) {
+    msg += (char)payload[i];
+  }
 
-  // cmdSlot.latestCmd = msg;
-  // cmdSlot.hasNewCmd = true;
+  cmdSlot.newCmd = msg;
+  cmdSlot.hasNewCmd = true;
 }
 
 // 尝试状态更新
 void mqttLink::update() {
-  if (WiFi.status() != WL_CONNECTED) {
-    connectWifi();
-  }
-
-  if (!mqttConnected()) {
-    connectMqtt();
-  }
-
   mqttClient.loop();
 }
 

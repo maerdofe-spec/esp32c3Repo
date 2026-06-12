@@ -30,8 +30,8 @@ class floatManager {
     void handleCmd();
 
   private:
-    mqttLink mqtt;
-    taskExecuter executer;
+    mqttLink &mqtt;
+    taskExecuter &executer;
 
     state currentState;
 };

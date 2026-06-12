@@ -5,6 +5,7 @@
 void taskExecuter::init() {
   depthTimer.resetAndStop();
   hoverTimer.resetAndStop();
+  hardResetter.resetAndStop();
 }
 
 void taskExecuter::idle() {
@@ -14,21 +15,42 @@ void taskExecuter::idle() {
   lastDepth = sensor.getDepth();
 }
 
+// toDepth会检查深度误差是否在容许范围内，并不断控制步进电机位置，若达到稳定时间则返回true
 bool taskExecuter::toDepth() {
   float currentDepth = sensor.getDepth();
   float error = goalDepth - currentDepth;
+
+
+  //测试段
+  if (!hardResetter.isRunning()) {
+    hardResetter.init(5000);
+  }
+
+
   // 如果计时器还没有初始化，则初始化计时器
   if (!depthTimer.isRunning()) {
     depthTimer.init(TRANSITION_STABLE_DURATION);
   }
   // 如果误差在容许范围内，检查计时器是否达到设定的稳定时间，如果达到则返回true
   if (fabsf(error) <= MAX_DEPTH_OFFSET) {
-    if(depthTimer.isReady()) return true;
+    if(depthTimer.isReady()) {
+      depthTimer.resetAndStop();
+      return true;
+    }
   }
   // 否则，误差超出容许范围，重置计时器
   else depthTimer.reset();
   // 进行PID控制
   pidControl(currentDepth, error);
+
+
+  //测试端，强制返回
+  if(hardResetter.isReady()) {
+    hardResetter.resetAndStop();
+    return true;
+  }
+
+
   // 返回false表示尚未达到目标深度
   return false;
 }
@@ -38,6 +60,14 @@ bool taskExecuter::toDepth() {
 bool taskExecuter::hover() {
   float currentDepth = sensor.getDepth();
   float error = goalDepth - currentDepth;
+
+
+  //测试段
+  if (!hardResetter.isRunning()) {
+    hardResetter.init(5000);
+  }
+
+
   // 如果计时器还没有初始化，则初始化计时器
   if (!hoverTimer.isRunning()) {
     hoverTimer.init(HOVER_DURATION);
@@ -46,6 +76,15 @@ bool taskExecuter::hover() {
   if (hoverTimer.isReady()) return true;
   // 否则，还没有悬停足够时间，继续进行PID控制
   pidControl(currentDepth, error);
+
+
+  //测试端，强制返回
+  if(hardResetter.isReady()) {
+    hardResetter.resetAndStop();
+    return true;
+  }
+
+
   // 返回false表示尚未悬停足够时间
   return false;
 }
@@ -53,7 +92,7 @@ bool taskExecuter::hover() {
 bool taskExecuter::recovery() {
   // 待完善回收逻辑，目前先简单地上升到0.1米并认为回收完成
   setGoalDepth(0.1f);
-  toDepth();
+  return(toDepth());
 }
 
 void taskExecuter::pidControl(float currentDepth, float error) {

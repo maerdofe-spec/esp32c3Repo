@@ -11,6 +11,11 @@
     需要传递到浮标的数据有：三个pid参数，目标深度，初始化信号
 */
 /*  
+    listener 1883 0.0.0.0
+    allow_anonymous true
+    
+    ipconfig
+    mosquitto.exe -c mosquitto.conf -v
     mosquitto启动失败时，终止当前占用进程
     netstat -ano | findstr :1883
     taskkill /PID 12345 /F
@@ -34,6 +39,7 @@ class mqttLink {
     void clearCmd();
     // 状态读取
     bool mqttConnected() {return mqttClient.connected();}
+    PubSubClient mqttClient;
 
   private:
     struct commandSlot {
@@ -48,7 +54,6 @@ class mqttLink {
     String emptyCmd;
     commandSlot cmdSlot;
     WiFiClient wifiClient;
-    PubSubClient mqttClient;
 };
 
 #endif

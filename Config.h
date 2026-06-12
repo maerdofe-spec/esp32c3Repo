@@ -26,13 +26,15 @@
 #define COMPANY_ID "Blue Fins"
 
 // WiFi 参数
-#define WIFI_SSID           "FINS"  //esp32_sjtu
-#define WIFI_PASSWORD       "fins1896"  //esp32_sjtu
+#define WIFI_SSID           "OPPOA5"    //"FINS"  //esp32_sjtu
+#define WIFI_PASSWORD       "77777777"   //"fins1896"  //esp32_sjtu
+// #define WIFI_SSID           "FINS"  //esp32_sjtu
+// #define WIFI_PASSWORD       "fins1896"  //esp32_sjtu
 // #define WIFI_SSID           "esp32_sjtu"
 // #define WIFI_PASSWORD       "esp32_sjtu"
 
 // MQTT 参数
-#define MQTT_HOST "192.168.8.86"
+#define MQTT_HOST "192.168.45.152" //"192.168.8.86"
 #define MQTT_PORT 1883
 #define MQTT_TOPIC_COUNTER "/counter" // MQTT_TEST
 #define MQTT_TOPIC_DEBUG "/debug"     // DEBUG
