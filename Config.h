@@ -12,6 +12,7 @@
 // 任务参数
 #define TARGET_DEPTH_DEEP 2.5f    // 目标深度1: 2.5米
 #define TARGET_DEPTH_SHALLOW 0.4f // 目标深度2: 0.4米
+#define TRANSITION_STABLE_DURATION 2000 // 转换稳定时间: 2秒 (毫秒)
 #define HOVER_DURATION 30000      // 悬停时间: 30秒 (毫秒)
 #define LOG_INTERVAL 1000         // 数据记录间隔: 1秒
 #define MAX_DEPTH_OFFSET 0.05     // 最大任务深度偏移: 0.05米

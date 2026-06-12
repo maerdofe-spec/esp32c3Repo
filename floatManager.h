@@ -9,6 +9,7 @@
 #include "stepperDriver.h"
 #include "mqttLink.h"
 #include "taskExecuter.h"
+#include "dataRecorder.h"
 
 class floatManager {
   public:
@@ -33,7 +34,6 @@ class floatManager {
     taskExecuter executer;
 
     state currentState;
-    unsigned long lastMillis;
 };
 
 #endif
