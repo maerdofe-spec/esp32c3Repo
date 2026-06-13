@@ -30,6 +30,7 @@ class floatManager {
     void handleCmd();
 
   private:
+    bool isFirstTask = true;
     mqttLink &mqtt;
     taskExecuter &executer;
 

@@ -30,7 +30,12 @@ void floatManager::handleCurrentState() {
       break;
     case HOVER2:
       // 在HOVER2状态下，调用hover函数，如果悬停足够时间则切换到RECOVERY状态
-      if (executer.hover()) currentState = RECOVERY;
+      if (executer.hover()) {
+        if(isFirstTask)  {
+          currentState = DIVE;
+          isFirstTask = false;}
+        else currentState = RECOVERY;
+      }
       mqtt.publish(MQTT_TOPIC_HISTORY, "Hover2ng...");
       break;
     case RECOVERY:
@@ -40,7 +45,7 @@ void floatManager::handleCurrentState() {
       break;
     case UPLOADING:
       mqtt.publish(MQTT_TOPIC_HISTORY, "UPLOADING...");
-      currentState = IDLE;
+      /*if (executer.uploading()) */currentState = IDLE;
       break;
   }
 }

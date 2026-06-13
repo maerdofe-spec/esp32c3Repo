@@ -72,6 +72,10 @@ bool taskExecuter::hover() {
   if (!hoverTimer.isRunning()) {
     hoverTimer.init(HOVER_DURATION);
   }
+  // 如果误差超过比赛要求的最大任务深度偏移，重置计时器
+  if (fabsf(error) > MAX_DEPTH_OFFSET) {
+    hoverTimer.reset();
+  }
   // 检查计时器是否达到设定的稳定时间，如果达到则返回true
   if (hoverTimer.isReady()) return true;
   // 否则，还没有悬停足够时间，继续进行PID控制

@@ -22,7 +22,7 @@ void setup() {
 
 void loop() {
   currentMillis = millis();
-  if (currentMillis - lastMillis > 30) {
+  if (currentMillis - lastMillis > 500) {
     lastMillis = currentMillis;
     manager.run(); 
   }

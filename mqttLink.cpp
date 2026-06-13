@@ -38,6 +38,8 @@ void mqttLink::connectMqtt() {
   }
 
   if (!mqttConnected()) {
+    //设置心跳频率
+    mqttClient.setKeepAlive(MQTT_KEEPALIVE);
     bool ifConnected = mqttClient.connect(MQTT_CLIENT_ID);
     if (ifConnected) {
       mqttClient.publish(MQTT_TOPIC_CMD, "A new connection is established.");
