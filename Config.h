@@ -42,6 +42,7 @@
 #define MQTT_TOPIC_PREFIX   "/float_sjtu"
 #define MQTT_TOPIC_CMD MQTT_TOPIC_PREFIX "/cmd"
 #define MQTT_TOPIC_HISTORY MQTT_TOPIC_PREFIX "/history"
+#define MQTT_TOPIC_DATA MQTT_TOPIC_PREFIX "/data"
 // #define MQTT_TOPIC_STATUS   MQTT_TOPIC_PREFIX "/status"
 
 #define MQTT_CLIENT_ID      "float-sjtu-mqtt"

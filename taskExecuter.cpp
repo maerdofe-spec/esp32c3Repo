@@ -13,6 +13,8 @@ void taskExecuter::idle() {
   stepper.posControl(0, 0);
   pid.resetIntegral();
   pid.setLastDepth(sensor.getDepth());
+  // 避免esp长时间通电后上传数据的时间值过大
+  startTime = millis();
 }
 
 // toDepth会检查深度误差是否在容许范围内，并不断控制步进电机位置，若达到稳定时间则返回true
@@ -34,7 +36,7 @@ bool taskExecuter::toDepth(timeManager &recorderTimer) {
   }
   //定期记录数据
   if(recorderTimer.isReady()) {
-    recorder.record(currentDepth, millis());
+    recorder.record(currentDepth, millis() - startTime);
     recorderTimer.reset();
   }
   // 如果误差在容许范围内，检查计时器是否达到设定的稳定时间，如果达到则返回true
@@ -82,7 +84,7 @@ bool taskExecuter::hover(timeManager &recorderTimer) {
   }
   //定期记录数据
   if(recorderTimer.isReady()) {
-    recorder.record(currentDepth, millis());
+    recorder.record(currentDepth, millis() - startTime);
     recorderTimer.reset();
   }
 

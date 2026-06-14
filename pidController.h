@@ -9,6 +9,7 @@ class PIDController {
       : kp(kp), ki(ki), kd(kd), lastDepth(0.0f), integral(0.0f), feedforward(0) {}
 
     int32_t pidControl(float currentDepth, float error);
+    // 现可用MQTT动态调整PID参数
     void setGains(float newKp, float newKi, float newKd);
     void resetIntegral() { integral = 0.0f; }
     void setFeedforward(float ff) { feedforward = ff; }

@@ -30,7 +30,7 @@ class mqttLink {
     void connectWifi();
     void connectMqtt();
     // 发布数据
-    bool publish(char* topic, const char* payload);
+    bool publish(const char* topic, const char* payload);
     // 进loop，有新的命令就回调，更新commandSlot
     void update();
     // 读取数据

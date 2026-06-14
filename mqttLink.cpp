@@ -50,7 +50,7 @@ void mqttLink::connectMqtt() {
 }
 
 // mqtt publish回传原始数据
-bool mqttLink::publish(char* topic, const char* payload) {
+bool mqttLink::publish(const char* topic, const char* payload) {
   if (!mqttConnected()) {
     return false;
   }

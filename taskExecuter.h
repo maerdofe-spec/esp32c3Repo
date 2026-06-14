@@ -34,6 +34,7 @@ class taskExecuter {
     PIDController &pid;
 
     float goalDepth;
+    uint32_t startTime = 0;
 };
 
 #endif

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+<rect width="100%" height="100%" fill="#f8fbfc"/>
+<text x="480.0" y="32" text-anchor="middle" font-size="22" fill="#12343b">Depth vs Time</text>
+<line x1="90.0" y1="60" x2="90.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="90.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">0</text>
+<line x1="258.0" y1="60" x2="258.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="258.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">9.62</text>
+<line x1="426.0" y1="60" x2="426.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="426.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">19.24</text>
+<line x1="594.0" y1="60" x2="594.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="594.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">28.86</text>
+<line x1="762.0" y1="60" x2="762.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="762.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">38.48</text>
+<line x1="930.0" y1="60" x2="930.0" y2="470" stroke="#d7e3e7" stroke-width="1"/>
+<text x="930.0" y="516" text-anchor="middle" font-size="12" fill="#48656c">48.1</text>
+<line x1="90" y1="60.0" x2="930" y2="60.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="64.0" text-anchor="end" font-size="12" fill="#48656c">0</text>
+<line x1="90" y1="142.0" x2="930" y2="142.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="146.0" text-anchor="end" font-size="12" fill="#48656c">20.5</text>
+<line x1="90" y1="224.0" x2="930" y2="224.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="228.0" text-anchor="end" font-size="12" fill="#48656c">41</text>
+<line x1="90" y1="306.0" x2="930" y2="306.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="310.0" text-anchor="end" font-size="12" fill="#48656c">61.5</text>
+<line x1="90" y1="388.0" x2="930" y2="388.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="392.0" text-anchor="end" font-size="12" fill="#48656c">82</text>
+<line x1="90" y1="470.0" x2="930" y2="470.0" stroke="#d7e3e7" stroke-width="1"/>
+<text x="76" y="474.0" text-anchor="end" font-size="12" fill="#48656c">102.5</text>
+<line x1="90" y1="60" x2="90" y2="470" stroke="#12343b" stroke-width="2"/>
+<line x1="90" y1="470" x2="930" y2="470" stroke="#12343b" stroke-width="2"/>
+<text x="480.0" y="532" text-anchor="middle" font-size="14" fill="#12343b">Time (s)</text>
+<text x="24" y="270.0" text-anchor="middle" font-size="14" fill="#12343b" transform="rotate(-90 24 270.0)">Depth (m)</text>
+<polyline fill="none" stroke="#0b7285" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="98.8,470.0 142.5,470.0 186.2,470.0 230.0,70.0 273.8,70.0 317.5,461.6 361.2,461.6 405.0,61.6 448.8,61.6 492.5,470.0 536.2,470.0 580.0,70.0 623.8,70.0 667.5,70.0 711.2,461.6 755.0,461.6 798.8,61.6 842.5,61.6 886.3,460.4 930.0,460.4"/>
+</svg>
