@@ -1,16 +1,22 @@
 #include "sensorDriver.h"
+#include "lib/MS5837.cpp"
 
 sensorDriver::sensorDriver()
     : currentDepth(0.0f) {}
 
-void sensorDriver::init() {}
+void sensorDriver::init() {
+  Wire.begin(PIN_SDA, PIN_SCL);
+  sensor.init();
+}
 
-float sensorDriver::getDepth() const {
+float sensorDriver::getDepth() {
+  updateDepth();
   //return currentDepth;
-  //测试用
+  // 测试用
   return 0.0f;
 }
 
 void sensorDriver::updateDepth() {
-  // Implementation for updating depth
+  sensor.read();
+  currentDepth = sensor.depth();
 }

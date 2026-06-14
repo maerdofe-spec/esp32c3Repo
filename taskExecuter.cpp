@@ -11,8 +11,8 @@ void taskExecuter::init() {
 void taskExecuter::idle() {
   // 在待机状态下，保持机械复位状态，并重置PID控制器
   stepper.posControl(0, 0);
-  integral = 0;
-  lastDepth = sensor.getDepth();
+  pid.resetIntegral();
+  pid.setLastDepth(sensor.getDepth());
 }
 
 // toDepth会检查深度误差是否在容许范围内，并不断控制步进电机位置，若达到稳定时间则返回true
@@ -47,10 +47,10 @@ bool taskExecuter::toDepth(timeManager &recorderTimer) {
   // 否则，误差超出容许范围，重置计时器
   else depthTimer.reset();
   // 进行PID控制
-  pidControl(currentDepth, error);
+  Control(currentDepth, error);
 
 
-  //测试端，强制返回
+  //测试端，强制返回并重置计时器
   if(hardResetter.isReady()) {
     hardResetter.resetAndStop();
     depthTimer.resetAndStop();
@@ -96,10 +96,10 @@ bool taskExecuter::hover(timeManager &recorderTimer) {
     hoverTimer.resetAndStop();
     return true;
     }  // 否则，还没有悬停足够时间，继续进行PID控制
-  pidControl(currentDepth, error);
+  Control(currentDepth, error);
 
 
-  //测试端，强制返回
+  //测试端，强制返回并重置计时器
   if(hardResetter.isReady()) {
     hardResetter.resetAndStop();
     hoverTimer.resetAndStop();
@@ -117,14 +117,8 @@ bool taskExecuter::recovery(timeManager &recorderTimer) {
   return(toDepth(recorderTimer));
 }
 
-
-void taskExecuter::pidControl(float currentDepth, float error) {
-  float p = kp * error;
-  integral += error;
-  float i = ki * integral;
-  float d = kd * (currentDepth - lastDepth);
-  lastDepth = currentDepth;
-  uint32_t output = (uint32_t)(p + i + d + feedforward);
+void taskExecuter::Control(float currentDepth, float error) {
+  int32_t output = pid.pidControl(currentDepth, error);
   /*
   脉冲数为0时理论上处于最大排水的机械复位状态
   但有可能起始状态非机械复位状态，此时脉冲数可能会是负数，则需要绝对位置反向控制

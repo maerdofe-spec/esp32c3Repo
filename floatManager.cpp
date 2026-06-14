@@ -17,7 +17,7 @@ void floatManager::handleCurrentState() {
     case DIVE:
       // 在DIVE状态下，调用toDepth函数，如果达到目标深度则切换到HOVER1状态
       executer.setGoalDepth(TARGET_DEPTH_DEEP);
-      executer.setFeedforward(FEEDFORWARD_DEEP);
+      pid.setFeedforward(FEEDFORWARD_DEEP);
       if (executer.toDepth(recorderTimer)) currentState = HOVER1;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Diving...");
       break;
@@ -29,7 +29,7 @@ void floatManager::handleCurrentState() {
     case ASCEND:
       // 在ASCEND状态下，调用toDepth函数，如果达到目标深度则切换到HOVER2状态
       executer.setGoalDepth(TARGET_DEPTH_SHALLOW);
-      executer.setFeedforward(FEEDFORWARD_SHALLOW);
+      pid.setFeedforward(FEEDFORWARD_SHALLOW);
       if (executer.toDepth(recorderTimer)) currentState = HOVER2;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Ascending...");
       break;
@@ -65,6 +65,7 @@ void floatManager::handleCurrentState() {
       }
       // 完成上传后应当清空记录器数据并重置状态
       recorder.clear();
+      mqtt.publish(MQTT_TOPIC_HISTORY, "Complete uploading");
       currentState = IDLE;
       break;
   }
@@ -84,7 +85,37 @@ void floatManager::handleCmd() {
   if (cmd == "start") {
     // 收到start命令后，切换到DIVE状态并设置目标深度
     currentState = DIVE;
-    executer.setGoalDepth(TARGET_DEPTH_DEEP);
+  }
+
+  // 支持通过MQTT动态设置PID参数：
+  // 格式: "setpid <kp> <ki> <kd>"
+  if (cmd.startsWith("setpid ")) {
+    float kp=0, ki=0, kd=0;
+    uint8_t parsed = sscanf(cmd.c_str()+7, "%f %f %f", &kp, &ki, &kd);
+    if (parsed == 3) {
+      pid.setGains(kp, ki, kd);
+      char buf[64];
+      snprintf(buf, sizeof(buf), "PID updated kp=%.4f ki=%.6f kd=%.4f", kp, ki, kd);
+      mqtt.publish(MQTT_TOPIC_HISTORY, buf);
+    } else {
+      mqtt.publish(MQTT_TOPIC_HISTORY, "setpid format error");
+    }
+    return;
+  }
+
+  // 支持设置前馈: "setff <value>"，value 可以为小数
+  if (cmd.startsWith("setff ")) {
+    float ff = 0.0f;
+    int parsed = sscanf(cmd.c_str()+6, "%f", &ff);
+    if (parsed == 1) {
+      pid.setFeedforward(ff);
+      char buf[48];
+      snprintf(buf, sizeof(buf), "feedforward set %.4f", ff);
+      mqtt.publish(MQTT_TOPIC_HISTORY, buf);
+    } else {
+      mqtt.publish(MQTT_TOPIC_HISTORY, "setff format error");
+    }
+    return;
   }
 }
 

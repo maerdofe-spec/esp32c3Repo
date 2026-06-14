@@ -11,6 +11,7 @@
 #include "taskExecuter.h"
 #include "dataRecorder.h"
 #include "timeManager.h"
+#include "pidController.h"
 
 class floatManager {
   public:
@@ -24,7 +25,7 @@ class floatManager {
       UPLOADING
     };
 
-    floatManager(mqttLink &mq, taskExecuter &exe, dataRecorder &rec): mqtt(mq), executer(exe), recorder(rec) {};
+    floatManager(mqttLink &mq, taskExecuter &exe, dataRecorder &rec, PIDController &p): mqtt(mq), executer(exe), recorder(rec), pid(p) {};
     void init();
     void handleCurrentState();
     void run();
@@ -35,6 +36,7 @@ class floatManager {
     mqttLink &mqtt;
     taskExecuter &executer;
     dataRecorder &recorder;
+    PIDController &pid;
     timeManager recorderTimer;
     state currentState;
 };
