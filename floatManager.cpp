@@ -2,9 +2,13 @@
 
 void floatManager::init() {
   currentState = IDLE;
+  recorderTimer.resetAndStop();
 }
 
 void floatManager::handleCurrentState() {
+  if(!recorderTimer.isRunning()) {
+    recorderTimer.init(LOG_INTERVAL);
+  }
   switch (currentState) {
     case IDLE:
       executer.idle();
@@ -12,25 +16,26 @@ void floatManager::handleCurrentState() {
       break;
     case DIVE:
       // 在DIVE状态下，调用toDepth函数，如果达到目标深度则切换到HOVER1状态
+      executer.setGoalDepth(TARGET_DEPTH_DEEP);
       executer.setFeedforward(FEEDFORWARD_DEEP);
-      if (executer.toDepth()) currentState = HOVER1;
+      if (executer.toDepth(recorderTimer)) currentState = HOVER1;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Diving...");
       break;
     case HOVER1:
       // 在HOVER1状态下，调用hover函数，如果悬停足够时间则切换到ASCEND状态
-      if (executer.hover()) currentState = ASCEND;
+      if (executer.hover(recorderTimer)) currentState = ASCEND;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Hover1ng...");
       break;
     case ASCEND:
       // 在ASCEND状态下，调用toDepth函数，如果达到目标深度则切换到HOVER2状态
       executer.setGoalDepth(TARGET_DEPTH_SHALLOW);
       executer.setFeedforward(FEEDFORWARD_SHALLOW);
-      if (executer.toDepth()) currentState = HOVER2;
+      if (executer.toDepth(recorderTimer)) currentState = HOVER2;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Ascending...");
       break;
     case HOVER2:
-      // 在HOVER2状态下，调用hover函数，如果悬停足够时间则切换到RECOVERY状态
-      if (executer.hover()) {
+      // 在HOVER2状态下，调用hover函数，如果悬停足够时间则进行第二次任务，或在第二次完成后切换到RECOVERY状态
+      if (executer.hover(recorderTimer)) {
         if(isFirstTask)  {
           currentState = DIVE;
           isFirstTask = false;}
@@ -40,12 +45,27 @@ void floatManager::handleCurrentState() {
       break;
     case RECOVERY:
       // 在RECOVERY状态下，调用recovery函数，如果回收完成则切换到UPLOADING状态
-      if (executer.recovery()) currentState = UPLOADING;
+      if (executer.recovery(recorderTimer)) currentState = UPLOADING;
       mqtt.publish(MQTT_TOPIC_HISTORY, "Recovering...");
       break;
     case UPLOADING:
       mqtt.publish(MQTT_TOPIC_HISTORY, "UPLOADING...");
-      /*if (executer.uploading()) */currentState = IDLE;
+      // 停止记录计时器
+      recorderTimer.resetAndStop();
+      // 上传
+      uint8_t pendingCnt = recorder.pendingCount();
+      uint8_t processedCnt = 0;
+      const dataRecorder::sample *data = recorder.pendingData();
+      while(processedCnt < pendingCnt){
+        char payload[64];
+        // 测试用的简单指令
+        snprintf(payload, sizeof(payload), "Time: %lu ms, Depth: %.2f m", data[processedCnt].timeMs, data[processedCnt].depth);
+        mqtt.publish(MQTT_TOPIC_HISTORY, payload);
+        processedCnt++;
+      }
+      // 完成上传后应当清空记录器数据并重置状态
+      recorder.clear();
+      currentState = IDLE;
       break;
   }
 }

@@ -11,6 +11,7 @@ class dataRecorder {
     };
 
     dataRecorder();
+    void init();
     void record(float depth, unsigned long nowMs);
     void clear();
     bool hasPendingData() const { return sampleCount_ > 0; }

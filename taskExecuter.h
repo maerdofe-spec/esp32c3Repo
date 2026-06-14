@@ -5,10 +5,11 @@
 #include "stepperDriver.h"
 #include "config.h"
 #include "timeManager.h"
+#include "dataRecorder.h"
 
 class taskExecuter {
   public:
-    taskExecuter(sensorDriver &sen, stepperDriver &stp):sensor(sen), stepper(stp) {
+    taskExecuter(sensorDriver &sen, stepperDriver &stp, dataRecorder &rec):sensor(sen), stepper(stp), recorder(rec) {
       kp = CTRL_KP_DEFAULT;
       ki = CTRL_KI_DEFAULT;
       kd = CTRL_KD_DEFAULT;
@@ -20,18 +21,20 @@ class taskExecuter {
     void setGoalDepth(float depth) {goalDepth = depth;}
     void resetIntegral() {integral = 0;}
     // 任务函数，返回值表示是否完成任务
-    bool toDepth();
-    bool hover();
-    bool recovery();
+    bool toDepth(timeManager &recorderTimer);
+    bool hover(timeManager &recorderTimer);
+    bool recovery(timeManager &recorderTimer);
     // pid控制函数，接受当前深度和误差作为输入，输出控制信号
     void pidControl(float currentDepth, float error);
 
   private:
-    sensorDriver sensor;
-    stepperDriver stepper;
+    sensorDriver &sensor;
+    stepperDriver &stepper;
     timeManager hardResetter;
     timeManager depthTimer;
     timeManager hoverTimer;
+    timeManager recorderTimer;
+    dataRecorder &recorder;
     uint32_t integral, feedforward;
     float kp, ki, kd, lastDepth, goalDepth;
 };

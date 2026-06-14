@@ -16,8 +16,9 @@ void taskExecuter::idle() {
 }
 
 // toDepth会检查深度误差是否在容许范围内，并不断控制步进电机位置，若达到稳定时间则返回true
-bool taskExecuter::toDepth() {
-  float currentDepth = sensor.getDepth();
+bool taskExecuter::toDepth(timeManager &recorderTimer) {
+  // currentDepth测试值
+  float currentDepth = 100.0f+goalDepth+sensor.getDepth();
   float error = goalDepth - currentDepth;
 
 
@@ -30,6 +31,11 @@ bool taskExecuter::toDepth() {
   // 如果计时器还没有初始化，则初始化计时器
   if (!depthTimer.isRunning()) {
     depthTimer.init(TRANSITION_STABLE_DURATION);
+  }
+  //定期记录数据
+  if(recorderTimer.isReady()) {
+    recorder.record(currentDepth, millis());
+    recorderTimer.reset();
   }
   // 如果误差在容许范围内，检查计时器是否达到设定的稳定时间，如果达到则返回true
   if (fabsf(error) <= MAX_DEPTH_OFFSET) {
@@ -47,6 +53,7 @@ bool taskExecuter::toDepth() {
   //测试端，强制返回
   if(hardResetter.isReady()) {
     hardResetter.resetAndStop();
+    depthTimer.resetAndStop();
     return true;
   }
 
@@ -57,8 +64,9 @@ bool taskExecuter::toDepth() {
 
 
 // 逻辑类同toDepth，但使用hoverTimer和HOVER_DURATION，且不会重置计时器，仅检查是否达到稳定时间
-bool taskExecuter::hover() {
-  float currentDepth = sensor.getDepth();
+bool taskExecuter::hover(timeManager &recorderTimer) {
+  // currentDepth测试值
+  float currentDepth = goalDepth+sensor.getDepth();
   float error = goalDepth - currentDepth;
 
 
@@ -72,19 +80,29 @@ bool taskExecuter::hover() {
   if (!hoverTimer.isRunning()) {
     hoverTimer.init(HOVER_DURATION);
   }
+  //定期记录数据
+  if(recorderTimer.isReady()) {
+    recorder.record(currentDepth, millis());
+    recorderTimer.reset();
+  }
+
   // 如果误差超过比赛要求的最大任务深度偏移，重置计时器
   if (fabsf(error) > MAX_DEPTH_OFFSET) {
     hoverTimer.reset();
   }
+
   // 检查计时器是否达到设定的稳定时间，如果达到则返回true
-  if (hoverTimer.isReady()) return true;
-  // 否则，还没有悬停足够时间，继续进行PID控制
+  if (hoverTimer.isReady()) {
+    hoverTimer.resetAndStop();
+    return true;
+    }  // 否则，还没有悬停足够时间，继续进行PID控制
   pidControl(currentDepth, error);
 
 
   //测试端，强制返回
   if(hardResetter.isReady()) {
     hardResetter.resetAndStop();
+    hoverTimer.resetAndStop();
     return true;
   }
 
@@ -93,11 +111,12 @@ bool taskExecuter::hover() {
   return false;
 }
 
-bool taskExecuter::recovery() {
+bool taskExecuter::recovery(timeManager &recorderTimer) {
   // 待完善回收逻辑，目前先简单地上升到0.1米并认为回收完成
   setGoalDepth(0.1f);
-  return(toDepth());
+  return(toDepth(recorderTimer));
 }
+
 
 void taskExecuter::pidControl(float currentDepth, float error) {
   float p = kp * error;

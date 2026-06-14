@@ -4,19 +4,22 @@
 #include "mqttLink.h"
 #include "stepperDriver.h"
 #include "sensorDriver.h"
+#include "dataRecorder.h"
 
 unsigned long lastMillis;
 unsigned long currentMillis;
 mqttLink mqtt;
 sensorDriver sensor;
 stepperDriver stepper;
-taskExecuter executer(sensor, stepper);
-floatManager manager(mqtt, executer);
+dataRecorder recorder;
+taskExecuter executer(sensor, stepper,recorder);
+floatManager manager(mqtt, executer,recorder);
 
 void setup() {
   sensor.init();
   mqtt.init();
   manager.init();
+  recorder.init();
   lastMillis = millis();
 }
 

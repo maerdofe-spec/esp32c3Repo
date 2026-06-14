@@ -1,7 +1,9 @@
 #include "dataRecorder.h"
 
-dataRecorder::dataRecorder()
-    : sampleCount_(0), uploadPending_(false) {}
+dataRecorder::dataRecorder() : sampleCount_(0), uploadPending_(false){}
+
+void dataRecorder::init() {
+}
 
 void dataRecorder::record(float depth, unsigned long nowMs) {
   if (sampleCount_ < kMaxSamples) {

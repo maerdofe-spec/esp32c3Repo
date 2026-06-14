@@ -5,7 +5,7 @@
 class stepperDriver {
   public:
     stepperDriver() {
-      Serial.begin(115200);
+        Serial.begin(115200);
     }
     void posControl(uint8_t dir, uint32_t clk) {
       uint16_t vel = VELOCITY;

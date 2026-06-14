@@ -10,6 +10,7 @@
 #include "mqttLink.h"
 #include "taskExecuter.h"
 #include "dataRecorder.h"
+#include "timeManager.h"
 
 class floatManager {
   public:
@@ -23,7 +24,7 @@ class floatManager {
       UPLOADING
     };
 
-    floatManager(mqttLink &mq, taskExecuter &exe): mqtt(mq), executer(exe) {};
+    floatManager(mqttLink &mq, taskExecuter &exe, dataRecorder &rec): mqtt(mq), executer(exe), recorder(rec) {};
     void init();
     void handleCurrentState();
     void run();
@@ -33,7 +34,8 @@ class floatManager {
     bool isFirstTask = true;
     mqttLink &mqtt;
     taskExecuter &executer;
-
+    dataRecorder &recorder;
+    timeManager recorderTimer;
     state currentState;
 };
 
