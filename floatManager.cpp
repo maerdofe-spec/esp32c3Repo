@@ -6,9 +6,6 @@ void floatManager::init() {
 }
 
 void floatManager::handleCurrentState() {
-  if(!recorderTimer.isRunning()) {
-    recorderTimer.init(LOG_INTERVAL);
-  }
   switch (currentState) {
     case IDLE:
       executer.idle();
@@ -92,8 +89,11 @@ void floatManager::handleCmd() {
   }
 
   if (cmd == "start") {
-    // 收到start命令后，切换到DIVE状态并设置目标深度
+    // 收到start命令后，切换到DIVE状态并开始数据记录计时器
     currentState = DIVE;
+    if(!recorderTimer.isRunning()) {
+    recorderTimer.init(LOG_INTERVAL);
+  }
   }
 
   // 支持通过MQTT动态设置PID参数：

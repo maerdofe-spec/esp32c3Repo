@@ -114,9 +114,16 @@ bool taskExecuter::hover(timeManager &recorderTimer) {
 }
 
 bool taskExecuter::recovery(timeManager &recorderTimer) {
-  // 待完善回收逻辑，目前先简单地上升到0.1米并认为回收完成
-  setGoalDepth(0.1f);
-  return(toDepth(recorderTimer));
+  stepper.reset();
+  // 定期记录数据
+  float currentDepth = sensor.getDepth();
+  if(recorderTimer.isReady()) {
+    recorder.record(currentDepth, millis() - startTime);
+    recorderTimer.reset();
+  }
+  // 判断复位是否完成
+  if(currentDepth <= RESET_DEPTH) return true;
+  else return false;
 }
 
 void taskExecuter::Control(float currentDepth, float error) {
@@ -125,6 +132,7 @@ void taskExecuter::Control(float currentDepth, float error) {
   脉冲数为0时理论上处于最大排水的机械复位状态
   但有可能起始状态非机械复位状态，此时脉冲数可能会是负数，则需要绝对位置反向控制
   */
+  // 方向判断，针筒吸水量增大方向为0方向
   uint8_t dir = (output >= 0) ? 0 : 1;
   uint32_t clk = (uint32_t)abs(output);
   stepper.posControl(dir, clk);

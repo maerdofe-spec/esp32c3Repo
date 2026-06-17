@@ -2,6 +2,7 @@
 #define PID_CONTROLLER_H
 
 #include <cstdint>
+#include "config.h"
 
 class PIDController {
   public:
