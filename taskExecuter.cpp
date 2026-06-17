@@ -125,5 +125,7 @@ void taskExecuter::Control(float currentDepth, float error) {
   脉冲数为0时理论上处于最大排水的机械复位状态
   但有可能起始状态非机械复位状态，此时脉冲数可能会是负数，则需要绝对位置反向控制
   */
-  output > 0 ? stepper.posControl(0, output) : stepper.posControl(1, -output);
+  uint8_t dir = (output >= 0) ? 0 : 1;
+  uint32_t clk = (uint32_t)abs(output);
+  stepper.posControl(dir, clk);
 }

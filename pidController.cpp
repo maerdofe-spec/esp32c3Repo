@@ -7,8 +7,8 @@ int32_t PIDController::pidControl(float currentDepth, float error) {
   float d = kd * (currentDepth - lastDepth);
   lastDepth = currentDepth;
   float raw = p + i + d + feedforward;
-  // clamp to reasonable actuator range
-  const float MAX_OUT = 1e6f;
+  // 最大值限位
+  const float MAX_OUT = CLK_MAX; // 根据步进电机的最大脉冲数设置
   if (raw > MAX_OUT) raw = MAX_OUT;
   if (raw < -MAX_OUT) raw = -MAX_OUT;
   return (int32_t)raw;

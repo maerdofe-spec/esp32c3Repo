@@ -8,14 +8,17 @@
 
 // 步进电机参数
 #define VELOCITY 200
+#define CLK_MAX 1000000 // 步进电机最大脉冲数
 
 // 任务参数
 #define TARGET_DEPTH_DEEP 2.5f    // 目标深度1: 2.5米
 #define TARGET_DEPTH_SHALLOW 0.4f // 目标深度2: 0.4米
+
 #define TRANSITION_STABLE_DURATION 2000 // 转换稳定时间: 2秒 (毫秒)
 #define HOVER_DURATION 10000      // 悬停时间(测试改为10s): 30秒 (毫秒)
 #define LOG_INTERVAL 2500         // 数据记录间隔: 2.5秒
 #define MAX_DEPTH_OFFSET 0.05     // 最大任务深度偏移: 0.05米
+
 #define FEEDFORWARD_SHALLOW 3600
 #define FEEDFORWARD_DEEP 7200
 #define CTRL_KP_DEFAULT 0.90f
