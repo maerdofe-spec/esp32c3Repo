@@ -38,10 +38,12 @@ void floatManager::handleCurrentState() {
     case HOVER2:
       // 在HOVER2状态下，调用hover函数，如果悬停足够时间则进行第二次任务，或在第二次完成后切换到RECOVERY状态
       if (executer.hover(recorderTimer)) {
-        if(isFirstTask)  {
-          currentState = DIVE;
-          isFirstTask = false;}
-        else currentState = RECOVERY;
+        // 测试只进行一次任务
+        // if(isFirstTask)  {
+        //   currentState = DIVE;
+        //   isFirstTask = false;}
+        //else 
+        currentState = RECOVERY;
       }
       mqtt.publish(MQTT_TOPIC_HISTORY, "Hover2ng...");
       break;
@@ -93,7 +95,7 @@ void floatManager::handleCmd() {
     currentState = DIVE;
     if(!recorderTimer.isRunning()) {
     recorderTimer.init(LOG_INTERVAL);
-  }
+    }
   }
 
   // 支持通过MQTT动态设置PID参数：

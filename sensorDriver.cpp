@@ -6,14 +6,14 @@ sensorDriver::sensorDriver()
 
 void sensorDriver::init() {
   Wire.begin(PIN_SDA, PIN_SCL);
-  sensor.init();
+  sensor.init(Wire);
 }
 
 float sensorDriver::getDepth() {
   updateDepth();
-  //return currentDepth;
-  // 测试用
-  return 0.0f;
+  return currentDepth;
+  // // 测试用
+  // return 0.0f;
 }
 
 void sensorDriver::updateDepth() {

@@ -121,9 +121,19 @@ bool taskExecuter::recovery(timeManager &recorderTimer) {
     recorder.record(currentDepth, millis() - startTime);
     recorderTimer.reset();
   }
-  // 判断复位是否完成
-  if(currentDepth <= RESET_DEPTH) return true;
-  else return false;
+  // // 判断复位是否完成
+  // if(currentDepth <= RESET_DEPTH) return true;
+  // else return false;
+
+  //测试段，强制返回
+  if (!hardResetter.isRunning()) {
+    hardResetter.init(5000);
+  }
+  if(hardResetter.isReady()) {
+    hardResetter.resetAndStop();
+    return true;
+  }
+  return false;
 }
 
 void taskExecuter::Control(float currentDepth, float error) {
